@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.InstructionDao">
+
+  <!--创建表列名与实体类属性的映射关系-->
+  <!--返回的是instruction实体类-->
+  <resultMap id="BaseResultMap" type="com.example.entity.Instruction">
+    <id column="instruction_id" jdbcType="INTEGER" property="instructionId" />
+    <result column="painting_id" jdbcType="INTEGER" property="paintingId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+
+  <!--自定义查询条件-->
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <!--更新时的自定义查询条件-->
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <!-- 默认查询列：instruction_id, painting_id, content-->
+  <sql id="Base_Column_List">
+    instruction_id, painting_id, content
+  </sql>
+
+  <!--通过实体类example查询--><!--返回的是instruction对象列表-->
+  <select id="selectByExample" parameterType="com.example.entity.InstructionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <!--默认查询列-->
+    <include refid="Base_Column_List" />
+    from instruction
+    <!--自定义查询条件-->
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <!--排序-->
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <!--通过主键instruction_id查询--><!--返回的是一个instruction对象-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from instruction
+    where instruction_id = #{instructionId,jdbcType=INTEGER}
+  </select>
+  <!--通过主键instruction_id删除-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from instruction
+    where instruction_id = #{instructionId,jdbcType=INTEGER}
+  </delete>
+  <!--通过实体类example的自定义查询条件删除-->
+  <delete id="deleteByExample" parameterType="com.example.entity.InstructionExample">
+    delete from instruction
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <!--通过实体类instruction插入记录--><!--配置keyColumn和keyProperty-->
+  <insert id="insert" keyColumn="instruction_id" keyProperty="instructionId" parameterType="com.example.entity.Instruction" useGeneratedKeys="true">
+    insert into instruction (painting_id, content)
+    values (#{paintingId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR})
+  </insert>
+  <!--paintingId和content不为空时才插入记录-->
+  <insert id="insertSelective" keyColumn="instruction_id" keyProperty="instructionId" parameterType="com.example.entity.Instruction" useGeneratedKeys="true">
+    insert into instruction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paintingId != null">
+        painting_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paintingId != null">
+        #{paintingId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!--查询符合条件的记录数-->
+  <select id="countByExample" parameterType="com.example.entity.InstructionExample" resultType="java.lang.Long">
+    select count(*) from instruction
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <!--instructionId,paintingId,content不为空时才更新--><!--传入的参数类型是map, key是record和example-->
+  <!--record是instruction对象，example是example对象-->
+  <update id="updateByExampleSelective" parameterType="map">
+    update instruction
+    <set>
+      <if test="record.instructionId != null">
+        instruction_id = #{record.instructionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.paintingId != null">
+        painting_id = #{record.paintingId,jdbcType=INTEGER},
+      </if>
+      <if test="record.content != null">
+        content = #{record.content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <!--通过example的自定义查询条件更新记录-->
+  <update id="updateByExample" parameterType="map">
+    update instruction
+    set instruction_id = #{record.instructionId,jdbcType=INTEGER},
+      painting_id = #{record.paintingId,jdbcType=INTEGER},
+      content = #{record.content,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <!--通过instruction对象的主键更新记录--><!--paintingId,content不为空时才更新-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Instruction">
+    update instruction
+    <set>
+      <if test="paintingId != null">
+        painting_id = #{paintingId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where instruction_id = #{instructionId,jdbcType=INTEGER}
+  </update>
+  <!--通过instruction对象的主键更新记录-->
+  <update id="updateByPrimaryKey" parameterType="com.example.entity.Instruction">
+    update instruction
+    set painting_id = #{paintingId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR}
+    where instruction_id = #{instructionId,jdbcType=INTEGER}
+  </update>
+</mapper>

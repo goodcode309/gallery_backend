@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.UserReviewDao">
+
+    <resultMap id="ReviewUserMap" type="com.example.entity.UserReview">
+        <id column="review_id" jdbcType="INTEGER" property="reviewId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="user_name" jdbcType="VARCHAR" property="username"/>
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <!--关联-->
+        <association property="transform" javaType="com.example.entity.Transform">
+            <association property="position" javaType="com.example.entity.Position">
+                <result column="position_x" jdbcType="FLOAT" property="x"/>
+                <result column="position_y" jdbcType="FLOAT" property="y"/>
+                <result column="position_z" jdbcType="FLOAT" property="z"/>
+            </association>
+            <association property="rotation" javaType="com.example.entity.Rotation">
+                <result column="rotation_x" jdbcType="FLOAT" property="x"/>
+                <result column="rotation_y" jdbcType="FLOAT" property="y"/>
+                <result column="rotation_z" jdbcType="FLOAT" property="z"/>
+            </association>
+        </association>
+
+    </resultMap>
+    <select id="selectByPaintingId" parameterType="java.lang.Integer" resultMap="ReviewUserMap">
+        select user.user_id, user_name, content, position.x as position_x, position.y as position_y, position.z as position_z, rotation.x as rotation_x, rotation.y as rotation_y, rotation.z as rotation_z
+        from review left join user on review.user_id = user.user_id left join position on position.position_id = review.position_id left join rotation on rotation.rotation_id = review.rotation_id
+        where painting_id=#{paintingId,jdbcType=INTEGER}
+    </select>
+</mapper>

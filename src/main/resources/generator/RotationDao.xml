@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.RotationDao">
+  <resultMap id="BaseResultMap" type="com.example.entity.Rotation">
+    <id column="rotation_id" jdbcType="INTEGER" property="rotationId" />
+    <result column="x" jdbcType="REAL" property="x" />
+    <result column="y" jdbcType="REAL" property="y" />
+    <result column="z" jdbcType="REAL" property="z" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    rotation_id, x, y, z
+  </sql>
+  <select id="selectByExample" parameterType="com.example.entity.RotationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from rotation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rotation
+    where rotation_id = #{rotationId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from rotation
+    where rotation_id = #{rotationId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.entity.RotationExample">
+    delete from rotation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" keyColumn="rotation_id" keyProperty="rotationId" parameterType="com.example.entity.Rotation" useGeneratedKeys="true">
+    insert into rotation (x, y, z)
+    values (#{x,jdbcType=REAL}, #{y,jdbcType=REAL}, #{z,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" keyColumn="rotation_id" keyProperty="rotationId" parameterType="com.example.entity.Rotation" useGeneratedKeys="true">
+    insert into rotation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="x != null">
+        x,
+      </if>
+      <if test="y != null">
+        y,
+      </if>
+      <if test="z != null">
+        z,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="x != null">
+        #{x,jdbcType=REAL},
+      </if>
+      <if test="y != null">
+        #{y,jdbcType=REAL},
+      </if>
+      <if test="z != null">
+        #{z,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.entity.RotationExample" resultType="java.lang.Long">
+    select count(*) from rotation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update rotation
+    <set>
+      <if test="record.rotationId != null">
+        rotation_id = #{record.rotationId,jdbcType=INTEGER},
+      </if>
+      <if test="record.x != null">
+        x = #{record.x,jdbcType=REAL},
+      </if>
+      <if test="record.y != null">
+        y = #{record.y,jdbcType=REAL},
+      </if>
+      <if test="record.z != null">
+        z = #{record.z,jdbcType=REAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update rotation
+    set rotation_id = #{record.rotationId,jdbcType=INTEGER},
+      x = #{record.x,jdbcType=REAL},
+      y = #{record.y,jdbcType=REAL},
+      z = #{record.z,jdbcType=REAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.Rotation">
+    update rotation
+    <set>
+      <if test="x != null">
+        x = #{x,jdbcType=REAL},
+      </if>
+      <if test="y != null">
+        y = #{y,jdbcType=REAL},
+      </if>
+      <if test="z != null">
+        z = #{z,jdbcType=REAL},
+      </if>
+    </set>
+    where rotation_id = #{rotationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.entity.Rotation">
+    update rotation
+    set x = #{x,jdbcType=REAL},
+      y = #{y,jdbcType=REAL},
+      z = #{z,jdbcType=REAL}
+    where rotation_id = #{rotationId,jdbcType=INTEGER}
+  </update>
+</mapper>
